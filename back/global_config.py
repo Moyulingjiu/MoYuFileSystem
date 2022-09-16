@@ -102,6 +102,12 @@ def load_config():
                     config.init_admin_username = config_yaml['file_server']['init_admin']['username']
                 if 'password' in config_yaml['file_server']['init_admin']:
                     config.init_admin_password = config_yaml['file_server']['init_admin']['password']
+        if not os.path.exists(config.data_path) or not os.path.isdir(config.data_path):
+            logger.info("创建数据目录：%s" % config.data_path)
+            os.mkdir(config.data_path)
+        if not os.path.exists(config.log_path) or not os.path.isdir(config.log_path):
+            logger.info("创建日志目录：%s" % config.log_path)
+            os.mkdir(config.log_path)
 
 
 load_config()
