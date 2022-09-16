@@ -1,5 +1,5 @@
 file_server:
-  # uvicorn服务运行的host和port
+  # uvicorn服务运行的host和port，如果只想开放本机访问请将host设为“127.0.0.1”
   host: "0.0.0.0"
   port: 8080
 
@@ -10,7 +10,11 @@ file_server:
   # 日志保留天数
   log_reserve_days: 15
   # 日志级别，0-debug,1-info,2-warning,3-error,4-critical
-  log_level: 1
+  log_level: 0
+  # 日志刷新时间（单位：秒），每隔多少秒写日志，请设置大于0，等于0可能产生一些意外的错误，建议大于等于0.1
+  log_refresh_seconds: 0.1
+  # 是否显示日志到控制台
+  log_to_console: true
 
   # 在没有数据文件的时候，初始化系统的管理员账户以及密码
   init_admin:
