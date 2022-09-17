@@ -4,6 +4,8 @@ import uvicorn
 from fastapi import FastAPI
 
 from global_config import config, logger
+from model import *
+from util import PasswordHandler
 
 app = FastAPI()
 
@@ -20,14 +22,24 @@ async def shutdown_event():
     logger.close_state = True
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.post("/longin")
+async def longin(login_info: Login):
+    pass
 
 
-@app.get("/download/{filename}")
-async def download_file(filename: str):
-    return {"message": f"Hello {filename}"}
+@app.get("/download/{username}/{filename}")
+async def download_file(username: str, filename: str):
+    pass
+
+
+@app.post("/upload/{username}/{filename}")
+async def upload_file(username: str, filename: str):
+    pass
+
+
+@app.post("/upload/{username}/{filename}")
+async def query_dir(username: str, filename: str):
+    pass
 
 
 if __name__ == '__main__':

@@ -16,6 +16,7 @@ __all__ = [
     "config", "logger"
 ]
 
+# 日志级别定义
 log_level_debug: int = 0
 log_level_info: int = 1
 log_level_warning: int = 2
@@ -32,6 +33,8 @@ class Config:
                  data_path: str = 'data',
                  log_path: str = 'logs', log_reserve_days: int = 15, log_level: int = 0,
                  log_refresh_seconds: float = 0.1,   log_to_console: bool = True,
+                 encryption_algorithm: str = 'sha256', encryption_salt: str = '',
+                 encryption_username_salt: bool = False,
                  init_admin_username: str = 'root', init_admin_password: str = '123456'):
         self.host = host  # fastapi运行的host
         self.port = port  # fastapi运行的端口
@@ -41,7 +44,11 @@ class Config:
         self.log_reserve_days = log_reserve_days  # 日志保留的天数
         self.log_level = log_level  # 日志级别
         self.log_refresh_seconds = log_refresh_seconds  # 日志的刷新周期
-        self.log_to_console = log_to_console
+        self.log_to_console = log_to_console  # 日志是否显示到console
+
+        self.encryption_algorithm = encryption_algorithm  # 加密方式
+        self.encryption_salt = encryption_salt  # 加密盐
+        self.encryption_username_salt = encryption_username_salt  # 是否使用用户名作为盐
 
         self.init_admin_username = init_admin_username  # 初始管理员用户名
         self.init_admin_password = init_admin_password  # 初始管理员密码
@@ -138,6 +145,7 @@ def load_config():
     with open('config.yml', 'r', encoding='utf8') as f:
         config_yaml = yaml.safe_load(f.read())
         if 'file_server' in config_yaml:
+            # 基础配置
             if 'host' in config_yaml['file_server']:
                 config.host = config_yaml['file_server']['host']
             if 'port' in config_yaml['file_server']:
@@ -155,6 +163,18 @@ def load_config():
             if 'log_to_console' in config_yaml['file_server']:
                 config.log_to_console = config_yaml['file_server']['log_to_console']
 
+            # 用户密码加密配置
+            if 'encryption_algorithm' in config_yaml['file_server']:
+                config.encryption_algorithm = config_yaml['file_server']['encryption_algorithm']
+                config.encryption_algorithm = config.encryption_algorithm.lower()
+                if config.encryption_algorithm == 'base64':
+                    logger.warning('base64不是安全的加密方式！')
+            if 'encryption_salt' in config_yaml['file_server']:
+                config.encryption_salt = config_yaml['file_server']['encryption_salt']
+            if 'encryption_username_salt' in config_yaml['file_server']:
+                config.encryption_username_salt = config_yaml['file_server']['encryption_username_salt']
+
+            # 初始化配置
             if 'init_admin' in config_yaml['file_server']:
                 if 'username' in config_yaml['file_server']['init_admin']:
                     config.init_admin_username = config_yaml['file_server']['init_admin']['username']

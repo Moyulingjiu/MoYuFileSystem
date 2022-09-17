@@ -16,6 +16,15 @@ file_server:
   # 是否显示日志到控制台
   log_to_console: true
 
+  # 密码加密算法，支持md5、sha256、base64（推荐sha256）。
+  # 请不要在运行中更改加密方式，会导致所有人密码不对！！！
+  # 如果需要修改加密方式，最好能对所有人的密码数据库进行处理。
+  encryption_algorithm: "sha256"
+  # 加密加盐，如果不为空将会把用户密码与盐混合然后再加密
+  encryption_salt: ""
+  # 将用户的账户名也纳入加密盐，开启此选项后请不要在数据库修改用户名
+  encryption_username_salt: false
+
   # 在没有数据文件的时候，初始化系统的管理员账户以及密码
   init_admin:
     username: root
