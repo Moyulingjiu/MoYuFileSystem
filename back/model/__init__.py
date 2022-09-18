@@ -8,5 +8,5 @@ from model.vo import *
 __all__ = [
     "User",
 
-    "Login"
+    "Login", "Register"
 ]

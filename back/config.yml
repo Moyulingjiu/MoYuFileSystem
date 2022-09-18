@@ -29,3 +29,8 @@ file_server:
   init_admin:
     username: root
     password: 123456
+
+  # 运行时配置
+  runtime_config:
+    # 只能邀请注册（开启后，只能由管理员创建账户不能用户自己注册）
+    only_invite: false

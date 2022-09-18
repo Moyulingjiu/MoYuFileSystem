@@ -5,7 +5,6 @@ from fastapi import FastAPI
 
 from global_config import config, logger
 from model import *
-from util import PasswordHandler
 
 app = FastAPI()
 
@@ -24,6 +23,11 @@ async def shutdown_event():
 
 @app.post("/longin")
 async def longin(login_info: Login):
+    pass
+
+
+@app.post("/register")
+async def register(register_info: Register):
     pass
 
 

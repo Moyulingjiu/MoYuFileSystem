@@ -32,10 +32,11 @@ class Config:
     def __init__(self, host: str = '0.0.0.0', port: int = 8000,
                  data_path: str = 'data',
                  log_path: str = 'logs', log_reserve_days: int = 15, log_level: int = 0,
-                 log_refresh_seconds: float = 0.1,   log_to_console: bool = True,
+                 log_refresh_seconds: float = 0.1, log_to_console: bool = True,
                  encryption_algorithm: str = 'sha256', encryption_salt: str = '',
                  encryption_username_salt: bool = False,
-                 init_admin_username: str = 'root', init_admin_password: str = '123456'):
+                 init_admin_username: str = 'root', init_admin_password: str = '123456',
+                 only_invite: bool = False):
         self.host = host  # fastapi运行的host
         self.port = port  # fastapi运行的端口
 
@@ -52,6 +53,8 @@ class Config:
 
         self.init_admin_username = init_admin_username  # 初始管理员用户名
         self.init_admin_password = init_admin_password  # 初始管理员密码
+
+        self.only_invite = only_invite  # 只能邀请注册
 
     def __setattr__(self, key, value):
         # 对于参数设置必须类型相同才行，避免出现类型错误
@@ -180,12 +183,21 @@ def load_config():
                     config.init_admin_username = config_yaml['file_server']['init_admin']['username']
                 if 'password' in config_yaml['file_server']['init_admin']:
                     config.init_admin_password = config_yaml['file_server']['init_admin']['password']
+
+            # 系统的一些配置
+            if 'runtime_config' in config_yaml['file_server']:
+                runtime_config = config_yaml['file_server']['runtime_config']
+                if 'only_invite' in runtime_config:
+                    config.only_invite = runtime_config['only_invite']
+
         if not os.path.exists(config.data_path) or not os.path.isdir(config.data_path):
             logger.info("创建数据目录：%s" % config.data_path)
             os.mkdir(config.data_path)
         if not os.path.exists(config.log_path) or not os.path.isdir(config.log_path):
             logger.info("创建日志目录：%s" % config.log_path)
             os.mkdir(config.log_path)
+
+        logger.debug('加载配置：' + str(config.__dict__))
 
 
 load_config()
